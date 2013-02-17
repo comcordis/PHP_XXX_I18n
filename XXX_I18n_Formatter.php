@@ -11,6 +11,37 @@ abstract class XXX_I18n_Formatter
 		return date('D, d-M-Y H:i:s T', $timestamp);
 	}
 	
+	public static function formatRFC2822 ($timestamp = false)
+	{
+		if ($timestamp === false)
+		{
+			$timestamp = XXX_TimestampHelpers::getCurrentTimestamp();
+		}
+		
+		$result = date(DATE_RFC2822, $timestamp);
+
+		if ($result === false || empty($result))
+		{
+			$result = date('r', $timestamp);
+		}
+
+		if ($result === false || empty($result))
+		{
+			// Get timezone offset in seconds
+			$timezoneOffset = date('Z', $timestamp);
+			// Determine wether it's a negative or positive number
+			$timezonePrefix = ($timezoneOffset < 0) ? "-" : "+";
+			// Get the absolute number without prefixed - or +
+			$timezoneOffset = abs($timezoneOffset);
+			// Calculate the number of hours
+			$timezoneOffset = ((($timezoneOffset / 3600) * 100) + (($timezoneOffset % 3600) / 60));
+			// Construct the full date string
+			$result = sprintf("%s %s%04d", date("D, j M Y H:i:s", $timestamp), $timezonePrefix, $timezoneOffset);
+		}
+
+		return $result;
+	}
+		
 	public static function formatBytes ($bytes, $precision = 2)
 	{ 
 	    $units = array('B', 'KB', 'MB', 'GB', 'TB');
