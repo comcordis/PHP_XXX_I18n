@@ -61,17 +61,27 @@ abstract class XXX_I18n_Currency
 		switch ($method)
 		{
 			case 'ecb':	
-				//$xmlFile = FSH_Remote_HTTP::getFileContent('http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml');
+				$xmlFile = XXX_FileSystem_Remote_HTTP::getFileContent('http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml');
 				
 				if ($xmlFile)
 				{			
-					$result['eur'] = 1000;
+					$result[] = array
+					(
+						'from' => 'eur',
+						'to' => 'eur',
+						'exchangeRate' => 1
+					);
 					
 					$patternMatches = XXX_String_Pattern::getMatches($xmlFile, 'currency=["\']([a-z0-9]*)["\'] rate=["\']([0-9.]*)["\']', 'i');
 					
 					for ($i = 0, $iEnd = XXX_Array::getFirstLevelItemTotal($patternMatches[0]); $i < $iEnd; ++$i)
-					{
-						$result[XXX_String::convertToLowerCase($patternMatches[1][$i])] = XXX_Type::makeFloat($patternMatches[2][$i]) * 1000;
+					{						
+						$result[] = array
+						(
+							'from' => 'eur',
+							'to' => XXX_String::convertToLowerCase($patternMatches[1][$i]),
+							'exchangeRate' => XXX_Type::makeFloat($patternMatches[2][$i])
+						);
 					}
 				}	
 				break;
