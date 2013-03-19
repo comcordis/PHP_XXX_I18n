@@ -807,14 +807,14 @@ abstract class XXX_I18n_UnitConverter
 		return $credit / 1000;
 	}
 	
-	public static function creditToCurrency ($credit = 0, $currencyCode = 'eur')
+	public static function creditToCurrency ($credit = 0, $currency_code = 'eur')
 	{
-		if (!$currencyCode)
+		if (!$currency_code)
 		{
-			$currencyCode = XXX_I18n_Localization::get('currency', 'currencyCode');
+			$currency_code = XXX_I18n_Localization::get('currency', 'currency_code');
 		}
 		
-		return self::creditToEuro($credit) * XXX_I18n_Currency::$exchangeRates[$currencyCode];
+		return self::creditToEuro($credit) * XXX_I18n_Currency::$exchangeRates[$currency_code];
 	}
 	
 	public static function euroToCredit ($euro = 0)
@@ -822,14 +822,14 @@ abstract class XXX_I18n_UnitConverter
 		return $euro * 1000;
 	}
 	
-	public static function currencyToCredit ($currency = 0, $currencyCode = 'eur')
+	public static function currencyToCredit ($currency = 0, $currency_code = 'eur')
 	{
-		if (!$currencyCode)
+		if (!$currency_code)
 		{
-			$currencyCode = XXX_I18n_Localization::get('currency', 'currencyCode');
+			$currency_code = XXX_I18n_Localization::get('currency', 'currency_code');
 		}
 		
-		return self::euroToCredit($currency / XXX_I18n_Currency::$exchangeRates[$currencyCode]);
+		return self::euroToCredit($currency / XXX_I18n_Currency::$exchangeRates[$currency_code]);
 	}
 	
 	////////////////////

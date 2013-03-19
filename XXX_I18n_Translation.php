@@ -5,25 +5,9 @@
 TODO Translation get and set service, making it possible that if a value does not exist to return a ticket that it needs to be translated 
 
 OR Have a translation version of the website where codes are displayed by each translation so it's easy to label them
-
-Problems:
-	- Only load when needed
-	- Have separate js files instead of 1 giant one when publishing to static
-		- Can be done by setting the module before loading a file
 		
-	- When publishing all languages/modules have to be loaded?
 	
 Load english anyway
-
-session setting
-in route
-in domain
-in browser header
-in geoip
-
-When loading i18n stuff, prefix that its part of a module, so when publishing its published within the right module.
-
-When adding query templates prefix them with the appropriate module
 
 */
 
@@ -37,23 +21,19 @@ abstract class XXX_I18n_Translation
 	(
 	);
 	
-	public static $groups = array();
-	
 	public static function initialize ()
-	{
-		// TODO check browser or session or cookie for translation
-		
+	{		
 		self::loadTranslation(self::$selectedTranslation);
 	}
 	
-	public static function loadTranslation ($translation = false)
+	public static function loadTranslation ($translation = false, $select = true)
 	{
 		if ($translation === false)
 		{
 			$translation = self::$selectedTranslation;
 		}
 		
-		$result = XXX_Path_Local::includeFile('translations', $translation . XXX_OperatingSystem::$directorySeparator . 'translations.' . $translation . '.php');
+		$result = XXX_Path_Local::includeFile('translations', $translation . XXX_OperatingSystem::$directorySeparator . 'translations.' . $translation . '.php', false);
 		
 		if ($result)
 		{
@@ -63,45 +43,34 @@ abstract class XXX_I18n_Translation
 			}
 		}
 		
+		if ($select)
+		{
+			self::$selectedTranslation = $translation;
+		}
+		
 		return $result;
 	}
-	
-	/*
-	
-	a group, belongs to a module?
-	a path belongs to a module?
-	
-	translation
-	groupName
-	
-	*/
-	
-	public static function addGroup ($translation = false, $groupName = '', $translations = array())
-	{
-		if ($translation === false)
-		{
-			$translation = self::$selectedTranslation;
-		}
-		
-		if (!XXX_Type::isArray(self::$groups, $translation))
-		{
-			self::$groups[$translation] = array();
-		}
-		
-		self::$groups[$translation][$groupName] = $translations;
-	}
-		
+			
 	public static function get ()
 	{
+		global $XXX_I18n_Translations;
+		
 		$exists = false;
 		
 		$result = false;
 		
 		$tempArguments = func_get_args();
 		
+		$firstArgument = $tempArguments[0];
+		
+		if (XXX_Type::isArray($firstArgument))
+		{
+			$tempArguments = $firstArgument;
+		}
+		
 	 	if (XXX_Array::getFirstLevelItemTotal($tempArguments) >= 1)
 	 	{
-	 		$result = self::$groups[self::$selectedTranslation][$tempArguments[0]];
+	 		$result = $XXX_I18n_Translations[self::$selectedTranslation][$tempArguments[0]];
 	 		
 	 		if ($result !== '')
 	 		{	
@@ -137,7 +106,20 @@ abstract class XXX_I18n_Translation
 	 	
 	 	if ($exists === false)
 	 	{
-	 		trigger_error('Unknown key: ' . XXX_Array::joinValuesToString($tempArguments, ', '));
+	 		if (self::$selectedTranslation != 'en')
+			{
+				$previousSelectedTranslation = self::$selectedTranslation;
+				
+				self::$selectedTranslation = 'en';
+				
+				self::get($tempArguments);
+				
+				self::$selectedTranslation = $previousSelectedTranslation;
+			}
+			else
+			{
+	 			trigger_error('Unknown key: ' . XXX_Array::joinValuesToString($tempArguments, ', '), E_USER_WARNING);
+	 		}
 	 	}
 	 	
 	 	return $result;
