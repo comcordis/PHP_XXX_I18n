@@ -7,7 +7,15 @@ $XXX_I18n_Currencies = array();
 $XXX_I18n_Currencies['baseCurrency_code'] = 'EUR';
 $XXX_I18n_Currencies['canonicalCurrency_code'] = 'EUR';
 
-$XXX_I18n_Currencies['exchangeRates'] = array();
+$XXX_I18n_Currencies['exchangeRates'] = array
+(
+	/*array
+	(
+		'from_code' => 'EUR',
+		'to_code' => 'USD',
+		'exchangeRate' => 1
+	)*/
+);
 
 $XXX_I18n_Currencies['information'] = array
 (
