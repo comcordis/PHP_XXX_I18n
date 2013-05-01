@@ -28,9 +28,16 @@ abstract class XXX_I18n_Translation
 	
 	public static function loadTranslation ($translation = false, $select = true)
 	{
+		global $XXX_I18n_Translations;
+		
 		if ($translation === false)
 		{
 			$translation = self::$selectedTranslation;
+		}
+		
+		if (!XXX_Type::isArray($XXX_I18n_Translations[$translation]))
+		{
+			$XXX_I18n_Translations[$translation] = array();
 		}
 		
 		$result = XXX_Path_Local::includeFile('translations', $translation . XXX_OperatingSystem::$directorySeparator . 'translations.' . $translation . '.php', false);

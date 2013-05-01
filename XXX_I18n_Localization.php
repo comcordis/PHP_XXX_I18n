@@ -17,9 +17,16 @@ class XXX_I18n_Localization
 	
 	public static function loadLocalization ($localization = false, $select = true)
 	{
+		global $XXX_I18n_Localizations;
+		
 		if ($localization === false)
 		{
 			$localization = self::$selectedLocalization;
+		}
+		
+		if (!XXX_Type::isArray($XXX_I18n_Localizations[$localization]))
+		{
+			$XXX_I18n_Localizations[$localization] = array();
 		}
 		
 		$result = XXX_Path_Local::includeFile('localizations', $localization . XXX_OperatingSystem::$directorySeparator . 'localizations.' . $localization . '.php', false);
