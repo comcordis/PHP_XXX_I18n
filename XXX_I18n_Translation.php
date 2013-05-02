@@ -90,7 +90,7 @@ abstract class XXX_I18n_Translation
 			 		{
 			 			$result = $result[$tempArguments[$i]];
 			 			
-			 			if ($result === '')
+			 			if ($result == '')
 			 			{
 			 				$result = false;
 			 				
@@ -118,8 +118,8 @@ abstract class XXX_I18n_Translation
 				$previousSelectedTranslation = self::$selectedTranslation;
 				
 				self::$selectedTranslation = 'en';
-				
-				self::get($tempArguments);
+								
+				$result = self::get($tempArguments);
 				
 				self::$selectedTranslation = $previousSelectedTranslation;
 			}

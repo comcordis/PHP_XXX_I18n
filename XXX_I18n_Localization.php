@@ -106,7 +106,7 @@ class XXX_I18n_Localization
 				
 				self::$selectedLocalization = 'us';
 				
-				self::get($tempArguments);
+				$result = self::get($tempArguments);
 				
 				self::$selectedLocalization = $previousSelectedLocalization;
 			}
