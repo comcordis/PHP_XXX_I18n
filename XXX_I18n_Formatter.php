@@ -82,6 +82,25 @@ abstract class XXX_I18n_Formatter
 				
 		return ($difference['remainder']['day'].'d '.$difference['remainder']['hour'].'h '.$difference['remainder']['minute'].'m '.$difference['remainder']['second'].'s');
 	}
+	
+	public static function formatCurrencyAmount ($amount = 0, $currency_code = 'EUR', $ceil = true)
+	{
+		$information = XXX_I18n_Currency::getInformation($currency_code);
+		
+		if ($ceil)
+		{
+			$amount = XXX_Number::ceil($amount);
+		}
+		else
+		{
+			$amount = XXX_Number::round($amount, $information['number']['decimals']);
+		}
+		
+		$result = '';
+		$result .= $information['symbol']['html'] . ' ' . $amount;
+	
+		return $result;
+	}
 }
 
 ?>

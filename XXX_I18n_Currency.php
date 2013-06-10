@@ -40,6 +40,15 @@ abstract class XXX_I18n_Currency
 		return $result;
 	}
 	
+	public static function getExchangedAmount ($amount = 0, $to_currency_code = '', $from_currency_code = '')
+	{
+		$exchangeRate = self::getExchangeRate($to_currency_code, $from_currency_code);
+		
+		$amount *= $exchangeRate;
+		
+		return $amount;
+	}
+	
 	public static function getExchangeRate ($to_code = '', $from_code = '', $canonical_code = '')
 	{
 		global $XXX_I18n_Currencies;
