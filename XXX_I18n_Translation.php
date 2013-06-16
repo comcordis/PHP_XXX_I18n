@@ -16,6 +16,7 @@ abstract class XXX_I18n_Translation
 	const CLASS_NAME = 'XXX_I18n_Translation';
 	
 	public static $selectedTranslation = 'en';
+	public static $originalTranslation = false;
 	
 	public static $loadedTranslations = array
 	(
@@ -57,7 +58,26 @@ abstract class XXX_I18n_Translation
 		
 		return $result;
 	}
+	
+	
+	public static function temporaryLoadTranslation ($translationCode = 'en')
+	{
+		if ($translationCode != '' && $translationCode != self::$selectedTranslation)
+		{
+			self::$originalTranslation = self::$selectedTranslation;
 			
+			self::loadTranslation($translationCode);
+		}
+	}
+	
+	public static function restoreOriginalTranslation ()
+	{
+		if (self::$originalTranslation)
+		{
+			self::loadTranslation(self::$originalTranslation);
+		}
+	}
+		
 	public static function get ()
 	{
 		global $XXX_I18n_Translations;

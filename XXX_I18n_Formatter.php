@@ -83,7 +83,7 @@ abstract class XXX_I18n_Formatter
 		return ($difference['remainder']['day'].'d '.$difference['remainder']['hour'].'h '.$difference['remainder']['minute'].'m '.$difference['remainder']['second'].'s');
 	}
 	
-	public static function formatCurrencyAmount ($amount = 0, $currency_code = 'EUR', $ceil = true)
+	public static function formatCurrencyAmount ($amount = 0, $currency_code = 'EUR', $ceil = false)
 	{
 		$information = XXX_I18n_Currency::getInformation($currency_code);
 		
