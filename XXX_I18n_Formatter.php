@@ -8,6 +8,11 @@ abstract class XXX_I18n_Formatter
 	
 	public static function formatRFC2965 ($timestamp)
 	{
+		if ($timestamp === false)
+		{
+			$timestamp = XXX_TimestampHelpers::getCurrentTimestamp();
+		}
+		
 		return date('D, d-M-Y H:i:s T', $timestamp);
 	}
 	
