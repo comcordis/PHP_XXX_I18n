@@ -40,9 +40,12 @@ abstract class XXX_I18n_Currency
 		return $result;
 	}
 	
-	public static function getExchangedAmount ($amount = 0, $to_currency_code = '', $from_currency_code = '')
+	public static function getExchangedAmount ($amount = 0, $to_currency_code = '', $from_currency_code = '', $exchangeRate = false)
 	{
-		$exchangeRate = self::getExchangeRate($to_currency_code, $from_currency_code);
+		if ($exchangeRate === false)
+		{
+			$exchangeRate = self::getExchangeRate($to_currency_code, $from_currency_code);
+		}
 		
 		$amount *= $exchangeRate;
 		

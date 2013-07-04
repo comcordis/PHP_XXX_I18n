@@ -88,13 +88,17 @@ abstract class XXX_I18n_Formatter
 		return ($difference['remainder']['day'].'d '.$difference['remainder']['hour'].'h '.$difference['remainder']['minute'].'m '.$difference['remainder']['second'].'s');
 	}
 	
-	public static function formatCurrencyAmount ($amount = 0, $currency_code = 'EUR', $ceil = false)
+	public static function formatCurrencyAmount ($amount = 0, $currency_code = 'EUR', $round = false)
 	{
 		$information = XXX_I18n_Currency::getInformation($currency_code);
 		
-		if ($ceil)
+		if ($round == 'ceil')
 		{
 			$amount = XXX_Number::ceil($amount);
+		}
+		else if ($round)
+		{
+			$amount = XXX_Number::round($amount);
 		}
 		else
 		{
