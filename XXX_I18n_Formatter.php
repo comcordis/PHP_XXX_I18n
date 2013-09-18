@@ -103,6 +103,18 @@ abstract class XXX_I18n_Formatter
 		else
 		{
 			$amount = XXX_Number::round($amount, $information['number']['decimals']);
+			
+			$tempParts = XXX_String::splitToArray($amount, '.');
+			
+			if (XXX_Array::getFirstLevelItemTotal($tempParts) > 1)
+			{						
+				$extraZeros = $information['number']['decimals'] - XXX_String::getCharacterLength($tempParts[1]);
+				
+				for ($i = 0, $iEnd = $extraZeros; $i < $iEnd; ++$i)
+				{
+					$amount .= '0';
+				}
+			}
 		}
 		
 		$result = '';
