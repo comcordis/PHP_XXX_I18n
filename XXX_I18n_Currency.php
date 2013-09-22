@@ -4,9 +4,17 @@ abstract class XXX_I18n_Currency
 {
 	public static $maximumCacheAge = 3600;
 	
+	public static $cacheFilePath = '';
+	
 	public static function initialize ()
 	{
 		global $XXX_I18n_Currencies;
+		
+		$timestampParts = XXX_TimestampHelpers::getTimestampPartsForPath();
+		$timestampPart = XXX_TimestampHelpers::getTimestampPartForFile(true);
+		
+		self::$cacheFilePath = XXX_Path_Local::extendPath(XXX_Path_Local::$deploymentDataPathPrefix, array('i18n', 'currencies', $timestampParts['year'],  $timestampParts['month'],  $timestampParts['date'], 'currency_exchangeRates_' . $timestampPart. '.tmp'));
+		
 		
 		$validFile = false;
 		
@@ -26,21 +34,12 @@ abstract class XXX_I18n_Currency
 			self::saveCurrentStateToCacheFile();
 		}
 	}
-	
-	public static function getCacheFilePath ()
-	{
-		$timestampPart = XXX_TimestampHelpers::getTimestampPartForFile(true);
 		
-		$result = XXX_Path_Local::extendPath(XXX_Path_Local::$deploymentDataPathPrefix, array('currencies', $timestampPart . '.tmp'));
-		
-		return $result;
-	}
-	
 	public static function retrieveStateFromCacheFile ()
 	{
 		global $XXX_I18n_Currencies;
 		
-		$fileContent = XXX_FileSystem_Local::getFileContent(self::getCacheFilePath());
+		$fileContent = XXX_FileSystem_Local::getFileContent(self::$cacheFilePath);
 		$fileContent = XXX_String_PHPON::decode($fileContent);
 		
 		$XXX_I18n_Currencies['exchangeRates'] = $fileContent;
@@ -50,20 +49,18 @@ abstract class XXX_I18n_Currency
 	{
 		global $XXX_I18n_Currencies;
 		
-		XXX_FileSystem_Local::writeFileContent(self::getCacheFilePath(), XXX_String_PHPON::encode($XXX_I18n_Currencies['exchangeRates']));
+		XXX_FileSystem_Local::writeFileContent(self::$cacheFilePath, XXX_String_PHPON::encode($XXX_I18n_Currencies['exchangeRates']));
 	}
 	
 	public static function isUpToDateCacheFileAvailable ()
 	{
 		$result = false;
 		
-		$cacheFile = self::getCacheFilePath();
-		
-		if (XXX_FileSystem_Local::doesFileExist($cacheFile))
+		if (XXX_FileSystem_Local::doesFileExist(self::$cacheFilePath))
 		{
 			$now = XXX_TimestampHelpers::getCurrentTimestamp();
 			
-			$fileModifiedTimestamp = XXX_FileSystem_Local::getFileModifiedTimestamp($cacheFile);
+			$fileModifiedTimestamp = XXX_FileSystem_Local::getFileModifiedTimestamp(self::$cacheFilePath);
 			
 			if ($now - $fileModifiedTimestamp < self::$maximumCacheAge)
 			{
