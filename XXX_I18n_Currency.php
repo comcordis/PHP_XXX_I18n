@@ -2,6 +2,54 @@
 
 abstract class XXX_I18n_Currency
 {
+	public static $maximumCacheAge = 3600;
+	
+	public static function initialize ()
+	{
+		global $XXX_I18n_Currencies;
+		
+		$timestampPart = XXX_TimestampHelpers::getTimestampPartForFile(true);
+		
+		$validFile = false;
+		
+		$cacheFile = XXX_Path_Local::$deploymentDataPathPrefix . 'currencies' . XXX_OperatingSystem::$directorySeparator . $timestampPart . '.tmp';
+		
+		if (XXX_FileSystem_Local::doesFileExist($cacheFile))
+		{
+			$now = XXX_TimestampHelpers::getCurrentTimestamp();
+			
+			$fileModifiedTimestamp = XXX_FileSystem_Local::getFileModifiedTimestamp($cacheFile);
+			
+			if ($now - $fileModifiedTimestamp < self::$maximumCacheAge)
+			{
+				$validFile = true;
+				
+				$fileContent = XXX_FileSystem_Local::getFileContent($cacheFile);
+				$fileContent = XXX_String_PHPON::decode($fileContent);
+				
+				$XXX_I18n_Currencies['exchangeRates'] = $fileContent;
+			}
+		}
+		
+		if (!$validFile)
+		{
+			$simplifiedExchangeRatesForCode = self::getExchangeRatesExternal();
+			
+			$XXX_I18n_Currencies['exchangeRates'] = $simplifiedExchangeRatesForCode;
+			
+			XXX_FileSystem_Local::writeFileContent($cacheFile, XXX_String_PHPON::encode($XXX_I18n_Currencies['exchangeRates']));
+		}
+	}
+	
+	public static function composeExchangeRatesJS ()
+	{
+		global $XXX_I18n_Currencies;
+		
+		$result = 'XXX_I18n_Currencies.exchangeRates = ' . XXX_String_JSON::encode($XXX_I18n_Currencies['exchangeRates']) . ';';
+		
+		return $result;
+	}
+	
 	public static function getCodeForCountry_code ($country_code = '')
 	{
 		global $XXX_I18n_Currencies;

@@ -9,6 +9,7 @@ require_once 'XXX_I18n_Localization.php';
 require_once 'translations.php';
 require_once 'localizations.php';
 
+XXX_I18n_Currency::initialize();
 XXX_I18n_Translation::initialize();
 XXX_I18n_Localization::initialize();
 
