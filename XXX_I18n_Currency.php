@@ -8,11 +8,56 @@ abstract class XXX_I18n_Currency
 	{
 		global $XXX_I18n_Currencies;
 		
-		$timestampPart = XXX_TimestampHelpers::getTimestampPartForFile(true);
-		
 		$validFile = false;
 		
-		$cacheFile = XXX_Path_Local::$deploymentDataPathPrefix . 'currencies' . XXX_OperatingSystem::$directorySeparator . $timestampPart . '.tmp';
+		if (self::isUpToDateCacheFileAvailable())
+		{
+			$validFile = true;
+			
+			self::retrieveStateFromCacheFile();
+		}
+		
+		if (!$validFile)
+		{
+			$simplifiedExchangeRatesForCode = self::getExchangeRatesExternal();
+			
+			$XXX_I18n_Currencies['exchangeRates'] = $simplifiedExchangeRatesForCode;
+			
+			self::saveCurrentStateToCacheFile();
+		}
+	}
+	
+	public static function getCacheFilePath ()
+	{
+		$timestampPart = XXX_TimestampHelpers::getTimestampPartForFile(true);
+		
+		$result = XXX_Path_Local::extendPath(XXX_Path_Local::$deploymentDataPathPrefix, array('currencies', $timestampPart . '.tmp'));
+		
+		return $result;
+	}
+	
+	public static function retrieveStateFromCacheFile ()
+	{
+		global $XXX_I18n_Currencies;
+		
+		$fileContent = XXX_FileSystem_Local::getFileContent(self::getCacheFilePath());
+		$fileContent = XXX_String_PHPON::decode($fileContent);
+		
+		$XXX_I18n_Currencies['exchangeRates'] = $fileContent;
+	}
+	
+	public static function saveCurrentStateToCacheFile ()
+	{
+		global $XXX_I18n_Currencies;
+		
+		XXX_FileSystem_Local::writeFileContent(self::getCacheFilePath(), XXX_String_PHPON::encode($XXX_I18n_Currencies['exchangeRates']));
+	}
+	
+	public static function isUpToDateCacheFileAvailable ()
+	{
+		$result = false;
+		
+		$cacheFile = self::getCacheFilePath();
 		
 		if (XXX_FileSystem_Local::doesFileExist($cacheFile))
 		{
@@ -22,23 +67,11 @@ abstract class XXX_I18n_Currency
 			
 			if ($now - $fileModifiedTimestamp < self::$maximumCacheAge)
 			{
-				$validFile = true;
-				
-				$fileContent = XXX_FileSystem_Local::getFileContent($cacheFile);
-				$fileContent = XXX_String_PHPON::decode($fileContent);
-				
-				$XXX_I18n_Currencies['exchangeRates'] = $fileContent;
+				$result = true;
 			}
 		}
 		
-		if (!$validFile)
-		{
-			$simplifiedExchangeRatesForCode = self::getExchangeRatesExternal();
-			
-			$XXX_I18n_Currencies['exchangeRates'] = $simplifiedExchangeRatesForCode;
-			
-			XXX_FileSystem_Local::writeFileContent($cacheFile, XXX_String_PHPON::encode($XXX_I18n_Currencies['exchangeRates']));
-		}
+		return $result;
 	}
 	
 	public static function composeExchangeRatesJS ()
