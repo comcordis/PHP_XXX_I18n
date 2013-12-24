@@ -247,7 +247,7 @@ abstract class XXX_I18n_Currency
 		return $result;
 	}
 	
-	public static function getExchangeRatesExternal ($method = 'tmc')
+	public static function getExchangeRatesExternal ($method = 'ecb')
 	{
 		$result = array();
 				
