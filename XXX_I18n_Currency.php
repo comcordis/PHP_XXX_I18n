@@ -50,6 +50,13 @@ abstract class XXX_I18n_Currency
 		global $XXX_I18n_Currencies;
 		
 		XXX_FileSystem_Local::writeFileContent(self::$cacheFilePath, XXX_String_PHPON::encode($XXX_I18n_Currencies['exchangeRates']));
+		
+		$currenciesPath = XXX_Path_Local::extendPath(XXX_Path_Local::$deploymentDataPathPrefix, array('i18n', 'currencies'));
+		
+		XXX_FileSystem_Local::setDirectoryOwnerAdvanced($currenciesPath, 'apache', 'apache', true, true);
+		
+		XXX_FileSystem_Local::setDirectoryPermissions($currenciesPath, '770', true);			
+		XXX_FileSystem_Local::setFilePermissionsInDirectory($currenciesPath, '660', true);
 	}
 	
 	public static function isUpToDateCacheFileAvailable ()
