@@ -716,6 +716,25 @@ $XXX_I18n_Currencies['information'] = array
 			'decimals' => 2,
 			'smallestCoin' => 0.05
 		)
+	),
+	'AED' => array
+	(
+		'code' => 'AED',
+		'symbol' => array
+		(
+			'raw' => 'AED',
+			'html' => 'AED'
+		),
+		'country_codes' => array
+		(
+			'AE'
+		),
+		'number' => array
+		(
+			'subUnit' => 1 / 100,
+			'decimals' => 2,
+			'smallestCoin' => 1
+		)
 	)
 );
 
