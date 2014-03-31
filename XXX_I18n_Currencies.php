@@ -288,7 +288,7 @@ $XXX_I18n_Currencies['information'] = array
 		'symbol' => array
 		(
 			'raw' => 'kr',
-			'html' => '&#107;&#1114;'
+			'html' => 'kr'
 		),
 		'country_codes' => array
 		(
