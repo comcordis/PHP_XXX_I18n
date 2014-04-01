@@ -11,7 +11,7 @@ abstract class XXX_I18n_Currency
 		global $XXX_I18n_Currencies;
 		
 		$timestampParts = XXX_TimestampHelpers::getTimestampPartsForPath();
-		$timestampPart = XXX_TimestampHelpers::getTimestampPartForFile(true);
+		$timestampPart = XXX_TimestampHelpers::getTimestampPartForFile(false, true);
 		
 		self::$cacheFilePath = XXX_Path_Local::extendPath(XXX_Path_Local::$deploymentDataPathPrefix, array('i18n', 'currencies', $timestampParts['year'],  $timestampParts['month'],  $timestampParts['date'], 'currency_exchangeRates_' . $timestampPart. '.tmp'));
 		
