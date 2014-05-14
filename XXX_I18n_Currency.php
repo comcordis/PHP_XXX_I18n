@@ -2,7 +2,7 @@
 
 abstract class XXX_I18n_Currency
 {
-	public static $maximumCacheAge = 3600;
+	public static $maximumCacheAge = 604800;
 	
 	public static $cacheFilePath = '';
 	
@@ -10,20 +10,42 @@ abstract class XXX_I18n_Currency
 	{
 		global $XXX_I18n_Currencies;
 		
-		$timestampParts = XXX_TimestampHelpers::getTimestampPartsForPath();
-		$timestampPart = XXX_TimestampHelpers::getTimestampPartForFile(false, true);
-		
-		self::$cacheFilePath = XXX_Path_Local::extendPath(XXX_Path_Local::$deploymentDataPathPrefix, array('i18n', 'currencies', $timestampParts['year'],  $timestampParts['month'],  $timestampParts['date'], 'currency_exchangeRates_' . $timestampPart. '.tmp'));
-		
-		
+		$timestamp = new XXX_Timestamp();
+				
+		// Find newest existing cache file path
 		$validFile = false;
 		
-		if (self::isUpToDateCacheFileAvailable())
+		$maximumAttempts = 7;
+		$attempts = 0;
+		
+		while (true)
 		{
-			$validFile = true;
+			$timestampParts = XXX_TimestampHelpers::getTimestampPartsForPath($timestamp);
+			$timestampPart = XXX_TimestampHelpers::getTimestampPartForFile($timestamp, true);
 			
-			self::retrieveStateFromCacheFile();
+			
+			self::$cacheFilePath = XXX_Path_Local::extendPath(XXX_Path_Local::$deploymentDataPathPrefix, array('i18n', 'currencies', $timestampParts['year'],  $timestampParts['month'],  $timestampParts['date'], 'currency_exchangeRates_' . $timestampPart. '.tmp'));
+			
+			
+			if (self::isUpToDateCacheFileAvailable())
+			{
+				$validFile = true;
+				
+				self::retrieveStateFromCacheFile();
+				
+				break;
+			}
+			
+			$timestamp->set($timestamp->get() - 86400);
+			
+			++$attempts;
+			
+			if ($attempts >= $maximumAttempts)
+			{
+				break;
+			}
 		}
+		
 		
 		if (!$validFile)
 		{

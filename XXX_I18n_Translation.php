@@ -15,6 +15,10 @@ abstract class XXX_I18n_Translation
 {
 	const CLASS_NAME = 'XXX_I18n_Translation';
 	
+	public static $translationKeySecret = '8skj518qp0oc7skw';
+	
+	public static $translationKeys = false;
+	
 	public static $selectedTranslation = 'en';
 	public static $originalTranslation = false;
 	
@@ -25,6 +29,27 @@ abstract class XXX_I18n_Translation
 	public static function initialize ()
 	{		
 		self::loadTranslation(self::$selectedTranslation);
+		
+		if (XXX_PHP::$executionEnvironment == 'httpServer')
+		{
+			if ($_COOKIE['XXX_forceTranslationKeys'] == 'true')
+			{
+				self::$translationKeys = true;
+			}
+			
+			if ($_GET['enableTranslationKeys'] && (XXX::$deploymentInformation['localDevelopmentBox'] || $_GET['translationKeySecret'] == self::$translationKeySecret))
+			{
+				setcookie('XXX_forceTranslationKeys', 'true', 0, '/');
+				
+				self::$translationKeys = true;
+			}
+			else if ($_GET['disableTranslationKeys'])
+			{
+				setcookie('XXX_forceTranslationKeys', 'false', time() - 86400, '/');
+				
+				self::$translationKeys = false;
+			}
+		}
 	}
 	
 	public static function loadTranslation ($translation = false, $select = true)
@@ -95,58 +120,66 @@ abstract class XXX_I18n_Translation
 			$tempArguments = $firstArgument;
 		}
 		
-	 	if (XXX_Array::getFirstLevelItemTotal($tempArguments) >= 1)
-	 	{
-	 		$result = $XXX_I18n_Translations[self::$selectedTranslation][$tempArguments[0]];
-	 		
-	 		if ($result !== '')
-	 		{	
-				$exists = true;
-				
-			 	if (XXX_Array::getFirstLevelItemTotal($tempArguments) > 1)
+		if (self::$translationKeys)
+		{
+			$tempArguments = XXX_Array::deleteFirstItem($tempArguments);
+			$result = XXX_Array::joinValuesToString($tempArguments, '>');
+		}
+		else
+		{		
+		 	if (XXX_Array::getFirstLevelItemTotal($tempArguments) >= 1)
+		 	{
+		 		$result = $XXX_I18n_Translations[self::$selectedTranslation][$tempArguments[0]];
+		 		
+		 		if ($result !== '')
+		 		{	
+					$exists = true;
+					
+				 	if (XXX_Array::getFirstLevelItemTotal($tempArguments) > 1)
+				 	{
+				 		// Traverse other arguments
+				 		for ($i = 1, $iEnd = XXX_Array::getFirstLevelItemTotal($tempArguments); $i < $iEnd; ++$i)
+				 		{
+				 			$result = $result[$tempArguments[$i]];
+				 			
+				 			if ($result == '')
+				 			{
+				 				$result = false;
+				 				
+								$exists = false;	 
+				 				
+				 				break;
+				 			}
+				 			else
+				 			{
+				 				$exists = true;
+				 			}			 			
+				 		}
+				 	}
+			 	}
+			 	else
 			 	{
-			 		// Traverse other arguments
-			 		for ($i = 1, $iEnd = XXX_Array::getFirstLevelItemTotal($tempArguments); $i < $iEnd; ++$i)
-			 		{
-			 			$result = $result[$tempArguments[$i]];
-			 			
-			 			if ($result == '')
-			 			{
-			 				$result = false;
-			 				
-							$exists = false;	 
-			 				
-			 				break;
-			 			}
-			 			else
-			 			{
-			 				$exists = true;
-			 			}			 			
-			 		}
+			 		$exists = false;
 			 	}
 		 	}
-		 	else
+		 	
+		 	if ($exists === false)
 		 	{
-		 		$exists = false;
+		 		if (self::$selectedTranslation != 'en')
+				{
+					$previousSelectedTranslation = self::$selectedTranslation;
+					
+					self::$selectedTranslation = 'en';
+									
+					$result = self::get($tempArguments);
+					
+					self::$selectedTranslation = $previousSelectedTranslation;
+				}
+				else
+				{
+		 			trigger_error('Unknown key: ' . XXX_Array::joinValuesToString($tempArguments, ', '), E_USER_WARNING);
+		 		}
 		 	}
-	 	}
-	 	
-	 	if ($exists === false)
-	 	{
-	 		if (self::$selectedTranslation != 'en')
-			{
-				$previousSelectedTranslation = self::$selectedTranslation;
-				
-				self::$selectedTranslation = 'en';
-								
-				$result = self::get($tempArguments);
-				
-				self::$selectedTranslation = $previousSelectedTranslation;
-			}
-			else
-			{
-	 			trigger_error('Unknown key: ' . XXX_Array::joinValuesToString($tempArguments, ', '), E_USER_WARNING);
-	 		}
 	 	}
 	 	
 	 	return $result;
