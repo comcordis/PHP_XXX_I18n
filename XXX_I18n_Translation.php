@@ -1,11 +1,6 @@
 <?php
 
-/*
-
-TODO Translation get and set service, making it possible that if a value does not exist to return a ticket that it needs to be translated 
-
-OR Have a translation version of the website where codes are displayed by each translation so it's easy to label them
-		
+/*	
 	
 Load english anyway
 
@@ -66,7 +61,7 @@ abstract class XXX_I18n_Translation
 			$XXX_I18n_Translations[$translation] = array();
 		}
 		
-		$result = XXX_Path_Local::includeFile('translations', $translation . XXX_OperatingSystem::$directorySeparator . 'translations.' . $translation . '.php', false);
+		$result = XXX_Loader::loadFile('translations', $translation . XXX_OperatingSystem::$directorySeparator . 'translations.' . $translation . '.php', false);
 		
 		if ($result)
 		{

@@ -13,4 +13,6 @@ XXX_I18n_Currency::initialize();
 XXX_I18n_Translation::initialize();
 XXX_I18n_Localization::initialize();
 
+XXX_Path_Local::addDefaultIncludePathsForProjectSource('PHP_XXX_I18n');
+
 ?>

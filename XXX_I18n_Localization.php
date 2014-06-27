@@ -29,7 +29,7 @@ class XXX_I18n_Localization
 			$XXX_I18n_Localizations[$localization] = array();
 		}
 		
-		$result = XXX_Path_Local::includeFile('localizations', $localization . XXX_OperatingSystem::$directorySeparator . 'localizations.' . $localization . '.php', false);
+		$result = XXX_Loader::loadFile('localizations', $localization . XXX_OperatingSystem::$directorySeparator . 'localizations.' . $localization . '.php', false);
 		
 		if ($result)
 		{
