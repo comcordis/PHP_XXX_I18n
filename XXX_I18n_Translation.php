@@ -10,10 +10,6 @@ abstract class XXX_I18n_Translation
 {
 	const CLASS_NAME = 'XXX_I18n_Translation';
 	
-	public static $translationKeySecret = '8skj518qp0oc7skw';
-	
-	public static $translationKeys = false;
-	
 	public static $selectedTranslation = 'en';
 	public static $originalTranslation = false;
 	
@@ -24,27 +20,6 @@ abstract class XXX_I18n_Translation
 	public static function initialize ()
 	{		
 		self::loadTranslation(self::$selectedTranslation);
-		
-		if (XXX_PHP::$executionEnvironment == 'httpServer')
-		{
-			if ($_COOKIE['XXX_forceTranslationKeys'] == 'true')
-			{
-				self::$translationKeys = true;
-			}
-			
-			if ($_GET['enableTranslationKeys'] && (XXX::$deploymentInformation['localDevelopmentBox'] || $_GET['translationKeySecret'] == self::$translationKeySecret))
-			{
-				setcookie('XXX_forceTranslationKeys', 'true', 0, '/');
-				
-				self::$translationKeys = true;
-			}
-			else if ($_GET['disableTranslationKeys'])
-			{
-				setcookie('XXX_forceTranslationKeys', 'false', time() - 86400, '/');
-				
-				self::$translationKeys = false;
-			}
-		}
 	}
 	
 	public static function loadTranslation ($translation = false, $select = true)
@@ -115,7 +90,7 @@ abstract class XXX_I18n_Translation
 			$tempArguments = $firstArgument;
 		}
 		
-		if (self::$translationKeys)
+		if (XXX_SpecialContext::$translator)
 		{
 			$tempArguments = XXX_Array::deleteFirstItem($tempArguments);
 			$result = XXX_Array::joinValuesToString($tempArguments, '>');
