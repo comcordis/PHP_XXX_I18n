@@ -114,7 +114,8 @@ abstract class XXX_I18n_Translation
 				 			
 				 			if ($result == '')
 				 			{
-				 				$result = 'Missing:' .XXX_Array::joinValuesToString($tempArguments, '>');
+				 				//$result = 'Missing:' .XXX_Array::joinValuesToString($tempArguments, '>');
+				 				$result = '';
 				 				
 								$exists = false;	 
 				 				
