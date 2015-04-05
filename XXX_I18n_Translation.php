@@ -96,7 +96,7 @@ abstract class XXX_I18n_Translation
 			$result = XXX_Array::joinValuesToString($tempArguments, '>');
 		}
 		else
-		{		
+		{
 		 	if (XXX_Array::getFirstLevelItemTotal($tempArguments) >= 1)
 		 	{
 		 		$result = $XXX_I18n_Translations[self::$selectedTranslation][$tempArguments[0]];
@@ -114,8 +114,8 @@ abstract class XXX_I18n_Translation
 				 			
 				 			if ($result == '')
 				 			{
-				 				//$result = 'Missing:' .XXX_Array::joinValuesToString($tempArguments, '>');
-				 				$result = '';
+				 				$result = 'Please translate: ' .XXX_Array::joinValuesToString($tempArguments, '>');
+				 				//$result = '';
 				 				
 								$exists = false;	 
 				 				
