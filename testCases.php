@@ -1,6 +1,6 @@
 <?php
 
-XXX_Path_Local::addDefaultIncludePathsForPath('/application/sources/YAT');
+XXX_Path_Local::addDefaultIncludePathsForPath('/XXX/XXX_Sources/YAT');
 
 XXX_I18n_Localization::loadLocalization('us');
 XXX_I18n_Translation::loadTranslation('en');
