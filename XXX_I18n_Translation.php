@@ -114,8 +114,14 @@ abstract class XXX_I18n_Translation
 				 			
 				 			if ($result == '')
 				 			{
-				 				$result = 'Please translate: ' .XXX_Array::joinValuesToString($tempArguments, '>');
-				 				//$result = '';
+				 				if (XXX::$deploymentInformation['deployEnvironment'] != 'production')
+			 					{
+			 						$result = 'Please translate: ' .XXX_Array::joinValuesToString($tempArguments, '>');
+			 					}
+			 					else
+			 					{
+				 					$result = '';
+			 					}
 				 				
 								$exists = false;	 
 				 				
