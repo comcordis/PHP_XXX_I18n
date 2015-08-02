@@ -1,6 +1,8 @@
 <?php
 
-XXX_Path_Local::addDefaultIncludePathsForPath('/XXX/XXX_Sources/YAT');
+require_once('../../path_prefix_loader.php');
+
+XXX_Path_Local::addDefaultIncludePathsForPath($GLOBALS['path_prefix'].'/XXX/XXX_Sources/YAT');
 
 XXX_I18n_Localization::loadLocalization('us');
 XXX_I18n_Translation::loadTranslation('en');
