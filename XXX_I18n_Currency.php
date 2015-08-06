@@ -2,7 +2,7 @@
 
 abstract class XXX_I18n_Currency
 {
-	public static $maximumCacheAge = 604800;
+	public static $maximumCacheAge = 86400; // 604800 ($maximumAttempts ook aanpassen)
 	
 	public static $cacheFilePath = '';
 	
@@ -15,7 +15,7 @@ abstract class XXX_I18n_Currency
 		// Find newest existing cache file path
 		$validFile = false;
 		
-		$maximumAttempts = 7;
+		$maximumAttempts = 1; // 7
 		$attempts = 0;
 		
 		while (true)
